@@ -28,15 +28,27 @@ spec:
         args:
         - --enable-leader-election
         image: controller:latest
+        imagePullPolicy: Always
         env:
         - name: ENABLE_WEBHOOKS
           value: "false"
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['olm.targetNamespaces']
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: seaweedfs-operator
         name: manager
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 500m
+            memory: 1Gi
           requests:
             cpu: 100m
-            memory: 50Mi
+            memory: 64Mi
+      serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10

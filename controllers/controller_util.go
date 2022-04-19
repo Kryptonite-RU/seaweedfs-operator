@@ -241,11 +241,36 @@ func (r *SeaweedReconciler) CreateOrUpdateConfigMap(configMap *corev1.ConfigMap)
 	return result.(*corev1.ConfigMap), nil
 }
 
+func (r *SeaweedReconciler) CreateOrUpdateSecret(secret *corev1.Secret) (*corev1.Secret, error) {
+	result, err := r.CreateOrUpdate(secret, func(existing, desired runtime.Object) error {
+		existingSecret := existing.(*corev1.Secret)
+		desiredSecret := desired.(*corev1.Secret)
+
+		if existingSecret.Annotations == nil {
+			existingSecret.Annotations = map[string]string{}
+		}
+
+		for k, v := range desiredSecret.Annotations {
+			existingSecret.Annotations[k] = v
+		}
+
+		existingSecret.Labels = desiredSecret.Labels
+		existingSecret.Data = desiredSecret.Data
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*corev1.Secret), nil
+}
+
 // EmptyClone create an clone of the resource with the same name and namespace (if namespace-scoped), with other fields unset
 func EmptyClone(obj runtime.Object) (runtime.Object, error) {
 	meta, ok := obj.(metav1.Object)
 	if !ok {
-		return nil, fmt.Errorf("Obj %v is not a metav1.Object, cannot call EmptyClone", obj)
+		return nil, fmt.Errorf("obj %v is not a metav1.object, cannot call emptyclone", obj)
 	}
 	gvk, err := InferObjectKind(obj)
 	if err != nil {
@@ -257,7 +282,7 @@ func EmptyClone(obj runtime.Object) (runtime.Object, error) {
 	}
 	instMeta, ok := inst.(metav1.Object)
 	if !ok {
-		return nil, fmt.Errorf("New instatnce %v created from scheme is not a metav1.Object, EmptyClone failed", inst)
+		return nil, fmt.Errorf("new instatnce %v created from scheme is not a metav1.object, emptyclone failed", inst)
 	}
 	instMeta.SetName(meta.GetName())
 	instMeta.SetNamespace(meta.GetNamespace())
@@ -271,7 +296,7 @@ func InferObjectKind(obj runtime.Object) (schema.GroupVersionKind, error) {
 		return schema.GroupVersionKind{}, err
 	}
 	if len(gvks) != 1 {
-		return schema.GroupVersionKind{}, fmt.Errorf("Object %v has ambigious GVK", obj)
+		return schema.GroupVersionKind{}, fmt.Errorf("object %v has ambigious gvk", obj)
 	}
 	return gvks[0], nil
 }

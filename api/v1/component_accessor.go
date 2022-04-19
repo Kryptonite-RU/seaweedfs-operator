@@ -204,3 +204,8 @@ func (s *Seaweed) BaseFilerSpec() ComponentAccessor {
 func (s *Seaweed) BaseVolumeSpec() ComponentAccessor {
 	return buildSeaweedComponentAccessor(&s.Spec, &s.Spec.Volume.ComponentSpec)
 }
+
+// BaseGatewaySpec provides merged spec of filers
+func (s *Seaweed) BaseGatewaySpec() ComponentAccessor {
+	return buildSeaweedComponentAccessor(&s.Spec, &s.Spec.Gateway.ComponentSpec)
+}

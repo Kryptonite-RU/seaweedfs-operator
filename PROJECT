@@ -3,9 +3,17 @@ layout: go.kubebuilder.io/v2
 repo: github.com/seaweedfs/seaweedfs-operator
 projectName: seaweedfs-operator
 resources:
-- group: seaweed
+-
+  # TODO(user): Uncomment the below line if this resource implements a controller, else delete it.
+  # controller: true
+  domain: seaweedfs.com
+  group: seaweed
   kind: Seaweed
+  # TODO(user): Update the package path for your API if the below value is incorrect.
+  path: github.com/seaweedfs/seaweedfs-operator/api/v1
   version: v1
-version: 3-alpha
+version: "3"
 plugins:
-  go.operator-sdk.io/v2-alpha: {}
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+  #go.operator-sdk.io/v2-alpha: {}

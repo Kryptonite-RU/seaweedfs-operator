@@ -5,19 +5,37 @@ metadata:
   namespace: default
 spec:
   # Add fields here
-  image: chrislusf/seaweedfs:3.12
+  image: chrislusf/seaweedfs:2.93_large_disk
   volumeServerDiskCount: 1
-  hostSuffix: seaweed.abcdefg.com
   master:
     replicas: 3
-    volumeSizeLimitMB: 1024
+    volumeSizeLimitMB: 256
+    defaultReplication: "000"
+    env:
+      - name: WEED_MASTER_VOLUME_GROWTH_COPY_1
+        value: "1"
+      - name: WEED_MASTER_VOLUME_GROWTH_COPY_2
+        value: "1"
+      - name: WEED_MASTER_VOLUME_GROWTH_COPY_3
+        value: "1"
+      - name: WEED_MASTER_VOLUME_GROWTH_COPY_OTHER
+        value: "1"
   volume:
     replicas: 1
+    storageClassName: linstor-hdd
+    minFreeSpacePercent: 5
     requests:
       storage: 2Gi
   filer:
     replicas: 2
+    s3: false
     config: |
       [leveldb2]
       enabled = true
       dir = "/data/filerldb2"
+  gateway:
+    enabled: true
+    replicas: 1
+    image: ghcr.io/kryptonite-ru/minio:0.0.4-kryptonite
+    rootUser: minio
+    rootPassword: minio123

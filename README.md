@@ -1,5 +1,16 @@
 [![Build Status](https://travis-ci.com/seaweedfs/seaweedfs-operator.svg?branch=master)](https://travis-ci.com/github/seaweedfs/seaweedfs-operator)
 
+# Kryptonite: Make bundle
+
+Example:
+```bash
+$ make generate
+$ make manifests
+$ make bundle IMG=docker.kryptodev.ru/chrislusf/seaweedfs-operator:v0.0.2-kryptonite VERSION=0.0.2
+$ make docker-build IMG=docker.kryptodev.ru/chrislusf/seaweedfs-operator:v0.0.2-kryptonite
+$ make docker-push IMG=docker.kryptodev.ru/chrislusf/seaweedfs-operator:v0.0.2-kryptonite
+```
+
 # SeaweedFS Operator
 
 This [Kubernetes Operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) is made to easily deploy SeaweedFS onto your Kubernetes-Cluster.
