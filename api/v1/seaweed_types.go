@@ -37,6 +37,9 @@ const (
 	MasterGRPCPort = MasterHTTPPort + GRPCPortDelta
 	VolumeGRPCPort = VolumeHTTPPort + GRPCPortDelta
 	FilerGRPCPort  = FilerHTTPPort + GRPCPortDelta
+
+	GatewayConsolePort = 9093
+	GatewayPort        = 9000
 )
 
 // SeaweedSpec defines the desired state of Seaweed
@@ -101,6 +104,9 @@ type SeaweedSpec struct {
 
 	// Ingresses
 	HostSuffix *string `json:"hostSuffix,omitempty"`
+
+	// Gateway
+	Gateway *GatewaySpec `json:"gateway,omitempty"`
 }
 
 // SeaweedStatus defines the observed state of Seaweed
@@ -171,8 +177,9 @@ type FilerSpec struct {
 	// Filer-specific settings
 
 	MaxMB *int32 `json:"maxMB,omitempty"`
-	// +kubebuilder:default:=true
-	S3 bool `json:"s3,omitempty"`
+
+	// +kubebuilder:default:=false
+	S3 *bool `json:"s3,omitempty"`
 }
 
 // ComponentSpec is the base spec of each component, the fields should always accessed by the Basic<Component>Spec() method to respect the cluster-level properties
@@ -243,6 +250,29 @@ type ServiceSpec struct {
 
 	// ClusterIP is the clusterIP of service
 	ClusterIP *string `json:"clusterIP,omitempty"`
+}
+
+type GatewaySpec struct {
+	ComponentSpec               `json:",inline"`
+	corev1.ResourceRequirements `json:",inline"`
+
+	// +kubebuilder:default:=true
+	Enabled bool `json:"enabled,omitempty"`
+
+	// Image
+	// +kubebuilder:default:="ghcr.io/kryptonite-ru/minio:0.0.5-kryptonite"
+	Image string `json:"image,omitempty"`
+
+	// The desired ready replicas
+	// +kubebuilder:validation:Minimum=1
+	Replicas int32        `json:"replicas"`
+	Service  *ServiceSpec `json:"service,omitempty"`
+
+	// +kubebuilder:default:="minio"
+	RootUser string `json:"rootUser,omitempty"`
+
+	// +kubebuilder:default:="minio123"
+	RootPassword string `json:"rootPassword,omitempty"`
 }
 
 // +kubebuilder:object:root=true
