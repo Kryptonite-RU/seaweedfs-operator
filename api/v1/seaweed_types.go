@@ -275,6 +275,29 @@ type GatewaySpec struct {
 	RootPassword string `json:"rootPassword,omitempty"`
 }
 
+type ScyllaSpec struct {
+	ComponentSpec               `json:",inline"`
+	corev1.ResourceRequirements `json:",inline"`
+
+	// +kubebuilder:default:=true
+	Enabled bool `json:"enabled,omitempty"`
+
+	// +kubebuilder:default:="docker.io/scylladb/scylla:4.4.3"
+	Image string `json:"image,omitempty"`
+
+	// +kubebuilder:default:=3
+	Replicas int32        `json:"replicas,omitempty"`
+	Service  *ServiceSpec `json:"service,omitempty"`
+
+	// Restricts Scylla to N logical cores
+	// +kubebulder:default:=1
+	Cpu int32 `json:"cpu,omitempty"`
+
+	// Restricts Scylla to use RAM
+	// +kubebuilder:default:="4G"
+	Memory string `json:"memory,omitempty"`
+}
+
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
