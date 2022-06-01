@@ -107,6 +107,9 @@ type SeaweedSpec struct {
 
 	// Gateway
 	Gateway *GatewaySpec `json:"gateway,omitempty"`
+
+	// Scylla
+	Scylla *ScyllaSpec `json:"scylla,omitempty"`
 }
 
 // SeaweedStatus defines the observed state of Seaweed
