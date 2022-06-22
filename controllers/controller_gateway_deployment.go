@@ -32,6 +32,37 @@ func (r *SeaweedReconciler) createGatewayDeployment(m *seaweedv1.Seaweed) *appsv
 	envs := append(m.BaseGatewaySpec().Env(), kubernetesEnvVars...)
 	envs = append(envs, r.getGatewaySecretRefEnv(m)...)
 
+	requestCPU := m.Spec.Gateway.Requests[corev1.ResourceCPU]
+	requestMemory := m.Spec.Gateway.Requests[corev1.ResourceMemory]
+	limitCPU := m.Spec.Gateway.Limits[corev1.ResourceCPU]
+	limitMemory := m.Spec.Gateway.Limits[corev1.ResourceMemory]
+
+	resources := corev1.ResourceRequirements{}
+
+	if !limitCPU.IsZero() || !limitMemory.IsZero() {
+		resources.Limits = corev1.ResourceList{}
+
+		if !limitCPU.IsZero() {
+			resources.Limits[corev1.ResourceCPU] = limitCPU
+		}
+
+		if !limitMemory.IsZero() {
+			resources.Limits[corev1.ResourceMemory] = limitMemory
+		}
+	}
+
+	if !requestCPU.IsZero() || !requestMemory.IsZero() {
+		resources.Requests = corev1.ResourceList{}
+
+		if !requestCPU.IsZero() {
+			resources.Requests[corev1.ResourceCPU] = requestCPU
+		}
+
+		if !requestMemory.IsZero() {
+			resources.Requests[corev1.ResourceMemory] = requestMemory
+		}
+	}
+
 	gatewayPodSpec := m.BaseGatewaySpec().BuildPodSpec()
 	gatewayPodSpec.Containers = []corev1.Container{{
 		Name:            "s3-gateway",
@@ -55,6 +86,8 @@ func (r *SeaweedReconciler) createGatewayDeployment(m *seaweedv1.Seaweed) *appsv
 				Name:          "gateway-s3",
 			},
 		},
+
+		Resources: resources,
 
 		// TODO: add ReadinessProbe and LivenessProbe
 	}}
