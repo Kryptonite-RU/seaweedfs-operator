@@ -1,6 +1,6 @@
 domain: seaweedfs.com
 layout: go.kubebuilder.io/v2
-repo: github.com/seaweedfs/seaweedfs-operator
+repo: github.com/Kryptonite-RU/seaweedfs-operator
 projectName: seaweedfs-operator
 resources:
 -
@@ -10,7 +10,7 @@ resources:
   group: seaweed
   kind: Seaweed
   # TODO(user): Update the package path for your API if the below value is incorrect.
-  path: github.com/seaweedfs/seaweedfs-operator/api/v1
+  path: github.com/Kryptonite-RU/seaweedfs-operator/api/v1
   version: v1
 version: "3"
 plugins:

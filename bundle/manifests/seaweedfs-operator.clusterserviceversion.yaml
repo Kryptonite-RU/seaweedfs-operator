@@ -63,13 +63,13 @@ metadata:
     capabilities: Full Lifecycle
     categories: Storage, Big Data, S3
     certified: "false"
-    containerImage: docker.kryptodev.ru/chrislusf/seaweedfs-operator:v0.0.2-kryptonite
+    containerImage: ghcr.io/kryptonite-ru/seaweedfs-operator:v0.0.3-kryptonite
     createdAt: "2022-04-21 10:00:00"
     operators.operatorframework.io/builder: operator-sdk-v1.9.0+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v2
     repository: https://github.com/Kryptonite-RU/seaweedfs-operator/tree/kryptonite-main
     support: Kryptonite
-  name: seaweedfs-operator.v0.0.2
+  name: seaweedfs-operator.v0.0.3
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -273,7 +273,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: seaweedfs-operator
-                image: docker.kryptodev.ru/chrislusf/seaweedfs-operator:v0.0.2-kryptonite
+                image: ghcr.io/kryptonite-ru/seaweedfs-operator:v0.0.3-kryptonite
                 imagePullPolicy: Always
                 name: manager
                 resources:
@@ -306,4 +306,4 @@ spec:
   maturity: alpha
   provider:
     name: Kryptonite
-  version: 0.0.2
+  version: 0.0.3
