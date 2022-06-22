@@ -30,6 +30,37 @@ func (r *SeaweedReconciler) createFilerStatefulSet(m *seaweedv1.Seaweed) *appsv1
 	rollingUpdatePartition := int32(0)
 	enableServiceLinks := false
 
+	requestCPU := m.Spec.Filer.Requests[corev1.ResourceCPU]
+	requestMemory := m.Spec.Filer.Requests[corev1.ResourceMemory]
+	limitCPU := m.Spec.Filer.Limits[corev1.ResourceCPU]
+	limitMemory := m.Spec.Filer.Limits[corev1.ResourceMemory]
+
+	resources := corev1.ResourceRequirements{}
+
+	if !limitCPU.IsZero() || !limitMemory.IsZero() {
+		resources.Limits = corev1.ResourceList{}
+
+		if !limitCPU.IsZero() {
+			resources.Limits[corev1.ResourceCPU] = limitCPU
+		}
+
+		if !limitMemory.IsZero() {
+			resources.Limits[corev1.ResourceMemory] = limitMemory
+		}
+	}
+
+	if !requestCPU.IsZero() || !requestMemory.IsZero() {
+		resources.Requests = corev1.ResourceList{}
+
+		if !requestCPU.IsZero() {
+			resources.Requests[corev1.ResourceCPU] = requestCPU
+		}
+
+		if !requestMemory.IsZero() {
+			resources.Requests[corev1.ResourceMemory] = requestMemory
+		}
+	}
+
 	filerPodSpec := m.BaseFilerSpec().BuildPodSpec()
 	filerPodSpec.Volumes = []corev1.Volume{
 		{
@@ -103,6 +134,7 @@ func (r *SeaweedReconciler) createFilerStatefulSet(m *seaweedv1.Seaweed) *appsv1
 			SuccessThreshold:    1,
 			FailureThreshold:    6,
 		},
+		Resources: resources,
 	}}
 
 	dep := &appsv1.StatefulSet{

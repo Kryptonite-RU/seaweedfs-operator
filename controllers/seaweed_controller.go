@@ -78,7 +78,7 @@ func (r *SeaweedReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return result, err
 	}
 
-	if seaweedCR.Spec.Gateway.Enabled {
+	if seaweedCR.Spec.Gateway != nil && seaweedCR.Spec.Gateway.Enabled {
 		if done, result, err = r.ensureS3Gateway(seaweedCR); done {
 			return result, err
 		}

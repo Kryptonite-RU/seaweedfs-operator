@@ -46,6 +46,37 @@ func (r *SeaweedReconciler) createMasterStatefulSet(m *seaweedv1.Seaweed) *appsv
 	rollingUpdatePartition := int32(0)
 	enableServiceLinks := false
 
+	requestCPU := m.Spec.Master.Requests[corev1.ResourceCPU]
+	requestMemory := m.Spec.Master.Requests[corev1.ResourceMemory]
+	limitCPU := m.Spec.Master.Limits[corev1.ResourceCPU]
+	limitMemory := m.Spec.Master.Limits[corev1.ResourceMemory]
+
+	resources := corev1.ResourceRequirements{}
+
+	if !limitCPU.IsZero() || !limitMemory.IsZero() {
+		resources.Limits = corev1.ResourceList{}
+
+		if !limitCPU.IsZero() {
+			resources.Limits[corev1.ResourceCPU] = limitCPU
+		}
+
+		if !limitMemory.IsZero() {
+			resources.Limits[corev1.ResourceMemory] = limitMemory
+		}
+	}
+
+	if !requestCPU.IsZero() || !requestMemory.IsZero() {
+		resources.Requests = corev1.ResourceList{}
+
+		if !requestCPU.IsZero() {
+			resources.Requests[corev1.ResourceCPU] = requestCPU
+		}
+
+		if !requestMemory.IsZero() {
+			resources.Requests[corev1.ResourceMemory] = requestMemory
+		}
+	}
+
 	masterPodSpec := m.BaseMasterSpec().BuildPodSpec()
 	masterPodSpec.Volumes = []corev1.Volume{
 		{
@@ -115,6 +146,7 @@ func (r *SeaweedReconciler) createMasterStatefulSet(m *seaweedv1.Seaweed) *appsv
 			SuccessThreshold:    1,
 			FailureThreshold:    6,
 		},
+		Resources: resources,
 	}}
 
 	dep := &appsv1.StatefulSet{
