@@ -79,3 +79,4 @@ tags
 ### GoLand ###
 .idea
 bin/*
+.vscode
