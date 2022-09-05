@@ -33,6 +33,7 @@ const (
 	VolumeHTTPPort = 8444
 	FilerHTTPPort  = 8888
 	FilerS3Port    = 8333
+	metricsPort    = 9999
 
 	MasterGRPCPort = MasterHTTPPort + GRPCPortDelta
 	VolumeGRPCPort = VolumeHTTPPort + GRPCPortDelta

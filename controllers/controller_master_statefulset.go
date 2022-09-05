@@ -37,6 +37,7 @@ func buildMasterStartupScript(m *seaweedv1.Seaweed) string {
 
 	command = append(command, fmt.Sprintf("-ip=$(POD_NAME).%s-master-peer.%s", m.Name, m.Namespace))
 	command = append(command, fmt.Sprintf("-peers=%s", getMasterPeersString(m)))
+	command = append(command, fmt.Sprintf("-metricsPort=9999"))	
 	return strings.Join(command, " ")
 }
 
